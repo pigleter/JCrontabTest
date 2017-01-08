@@ -7,7 +7,7 @@ public class MyTest {
 	public static void main(String[] args) {
 		String[] inputCrontab = new String[6];
 		inputCrontab[0] = "1,3,11";
-		inputCrontab[1] = "0,4,6";
+		inputCrontab[1] = "*";
 		inputCrontab[2] = "1,6,14,31";
 		inputCrontab[3] = "*/7";
 		inputCrontab[4] = "3,5,8";
@@ -27,6 +27,13 @@ public class MyTest {
 		String[] vs_MM;
 		String[] vs_SS;
 		
+		int nowM = 0;
+		int nowW = 0;
+		int nowD = 0;
+		int nowHH = 0;
+		int nowMM = 0;
+		int nowSS = 0;
+		
 		int rangeFrom = 0;
 		int rangeTo = 0;
 		int rangePoint = 0;
@@ -34,9 +41,20 @@ public class MyTest {
 		
 		Calendar cl = Calendar.getInstance();
 		System.out.println(cl.getTime());
-		//System.out.println(Calendar.SECOND);
-		//cl.set(Calendar.SECOND, 20);
-		//System.out.println(Calendar.SECOND);
+		
+		nowM = cl.get(Calendar.MONTH) + 1;
+		nowW = cl.get(Calendar.DAY_OF_WEEK);
+		if(nowW - 1 == 0){
+			nowW = 7;
+		}
+		else{
+			nowW = nowW - 1;
+		}
+		nowD = cl.get(Calendar.DAY_OF_MONTH);
+		nowHH = cl.get(Calendar.HOUR_OF_DAY);
+		nowMM = cl.get(Calendar.MINUTE);
+		nowSS = cl.get(Calendar.SECOND);
+		
 		if(inputCrontab[0].contains("*")){
 			for(int i = 0; i < 12; i++){
 				M.add(i + 1);
