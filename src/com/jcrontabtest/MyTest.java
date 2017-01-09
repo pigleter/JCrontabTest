@@ -1,5 +1,6 @@
 package com.jcrontabtest;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -34,26 +35,25 @@ public class MyTest {
 		int nowMM = 0;
 		int nowSS = 0;
 		
+		boolean isFoundDay = false;
+		
 		int rangeFrom = 0;
 		int rangeTo = 0;
 		int rangePoint = 0;
 		int step = 0;
 		
 		Calendar cl = Calendar.getInstance();
+		cl.set(Calendar.MONTH, 0);
+		cl.set(Calendar.DAY_OF_MONTH, 31);
 		System.out.println(cl.getTime());
 		
-		nowM = cl.get(Calendar.MONTH) + 1;
-		nowW = cl.get(Calendar.DAY_OF_WEEK);
-		if(nowW - 1 == 0){
-			nowW = 7;
-		}
-		else{
-			nowW = nowW - 1;
-		}
-		nowD = cl.get(Calendar.DAY_OF_MONTH);
-		nowHH = cl.get(Calendar.HOUR_OF_DAY);
-		nowMM = cl.get(Calendar.MINUTE);
-		nowSS = cl.get(Calendar.SECOND);
+		System.out.println(cl.get(Calendar.DAY_OF_MONTH));
+		System.out.println(cl.get(Calendar.DAY_OF_WEEK));
+		
+		cl.add(Calendar.DAY_OF_WEEK, 1);
+		
+		System.out.println(cl.get(Calendar.DAY_OF_MONTH));
+		System.out.println(cl.get(Calendar.DAY_OF_WEEK));
 		
 		if(inputCrontab[0].contains("*")){
 			for(int i = 0; i < 12; i++){
@@ -186,12 +186,75 @@ public class MyTest {
 				SS.add(Integer.parseInt(vs_SS[i]));
 			}
 		}
-//		try{
-//			Thread.sleep(3000);
-//		}
-//		catch(Exception e){
-//			
-//		}
+		
+		nowSS = cl.get(Calendar.SECOND);
+		for(int i = 0; i < SS.size(); i++){
+			if(nowSS < SS.get(i)){
+				cl.set(Calendar.SECOND, SS.get(i));
+				break;
+			}
+			else if(i == SS.size() - 1){
+				cl.set(Calendar.SECOND, SS.get(0));
+				cl.add(Calendar.MINUTE, 1);
+			}			
+		}
+		
+		nowMM = cl.get(Calendar.MINUTE);
+		for(int i = 0; i < MM.size(); i++){
+			if(nowMM < MM.get(i)){
+				cl.set(Calendar.MINUTE, MM.get(i));
+				break;
+			}
+			else if(i == MM.size() - 1){
+				cl.set(Calendar.MINUTE, MM.get(0));
+				cl.add(Calendar.HOUR_OF_DAY, 1);
+			}
+		}
+		
+		nowHH = cl.get(Calendar.HOUR_OF_DAY);
+		for(int i = 0; i < HH.size(); i++){
+			if(nowHH < HH.get(i)){
+				cl.set(Calendar.HOUR_OF_DAY, HH.get(i));
+				break;
+			}
+			else if(i == HH.size() - 1){
+				cl.set(Calendar.HOUR_OF_DAY, HH.get(0));
+				cl.add(Calendar.DATE, 1);
+			}
+		}		
+				
+		isFoundDay = false;
+		while(!isFoundDay){
+			nowD = cl.get(Calendar.DAY_OF_MONTH);
+			for(int i = 0; i < D.size(); i++){
+				if(nowD < D.get(i)){
+					cl.set(Calendar.DAY_OF_MONTH, D.get(i));
+					nowW = cl.get(Calendar.DAY_OF_WEEK);
+					if(nowW - 1 == 0){
+						nowW = 7;
+					}
+					else{
+						nowW = nowW - 1;
+					}
+					for(int j = 0; j < W.size(); j++){
+						if(nowW == W.get(j)){
+							isFoundDay = true;
+							break;
+						}
+					}
+					if(isFoundDay){
+						break;
+					}
+				}
+			}
+			if(!isFoundDay){
+				cl.set(Calendar.DAY_OF_MONTH, D.get(0));
+				cl.add(Calendar.MONTH, 1);
+			}
+		}		
+		
+		nowM = cl.get(Calendar.MONTH) + 1;
+		
 		System.out.println(cl.getTime());
 	}
 }
